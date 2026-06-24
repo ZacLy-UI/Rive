@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * { margin: 0; padding: 0; }
+    body { background: transparent; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <canvas id="fishing" style="width:400px;height:400px;cursor:pointer;"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.35.0/dist/dotlottie.iife.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      new DotLottie({
+        canvas: document.getElementById('fishing'),
+        src: 'https://assets-v2.lottiefiles.com/a/1d242909-4eeb-4a56-a4c5-aed25aa51b12/lh5KVeg52i.lottie',
+        stateMachineId: 'StateMachine1',
+        autoplay: true,
+      });
+    });
+  </script>
+</body>
+</html>

@@ -4,20 +4,40 @@
   <style>
     * { margin: 0; padding: 0; }
     body { background: transparent; overflow: hidden; }
+    #debug { font-family: monospace; font-size: 12px; color: red; padding: 8px; }
   </style>
 </head>
 <body>
-  <canvas id="fishing" style="width:400px;height:400px;cursor:pointer;"></canvas>
-  <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.35.0/dist/dotlottie.iife.js"></script>
+  <canvas id="fishing" width="400" height="400" style="cursor:pointer;"></canvas>
+  <div id="debug"></div>
   <script>
-    window.addEventListener('load', function() {
-      new DotLottie({
-        canvas: document.getElementById('fishing'),
-        src: 'https://assets-v2.lottiefiles.com/a/1d242909-4eeb-4a56-a4c5-aed25aa51b12/lh5KVeg52i.lottie',
-        stateMachineId: 'StateMachine1',
-        autoplay: true,
-      });
-    });
+    function log(msg) {
+      document.getElementById('debug').innerText += msg + '\n';
+    }
+
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.35.0/dist/dotlottie.iife.js';
+    script.onload = function() {
+      log('script loaded');
+      try {
+        var canvas = document.getElementById('fishing');
+        log('canvas: ' + canvas.width + 'x' + canvas.height);
+        var dl = new DotLottie({
+          canvas: canvas,
+          src: 'https://assets-v2.lottiefiles.com/a/1d242909-4eeb-4a56-a4c5-aed25aa51b12/lh5KVeg52i.lottie',
+          stateMachineId: 'StateMachine1',
+          autoplay: true,
+        });
+        dl.addEventListener('load', function() { log('animation loaded'); });
+        dl.addEventListener('loadError', function(e) { log('load error: ' + JSON.stringify(e)); });
+      } catch(e) {
+        log('error: ' + e.message);
+      }
+    };
+    script.onerror = function() {
+      log('script failed to load from CDN');
+    };
+    document.body.appendChild(script);
   </script>
 </body>
 </html>

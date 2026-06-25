@@ -15,29 +15,43 @@
       document.getElementById('debug').innerText += msg + '\n';
     }
 
-    var script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.35.0/dist/dotlottie.iife.js';
-    script.onload = function() {
-      log('script loaded');
-      try {
-        var canvas = document.getElementById('fishing');
-        log('canvas: ' + canvas.width + 'x' + canvas.height);
-        var dl = new DotLottie({
-          canvas: canvas,
-          src: 'https://assets-v2.lottiefiles.com/a/1d242909-4eeb-4a56-a4c5-aed25aa51b12/lh5KVeg52i.lottie',
-          stateMachineId: 'StateMachine1',
-          autoplay: true,
-        });
-        dl.addEventListener('load', function() { log('animation loaded'); });
-        dl.addEventListener('loadError', function(e) { log('load error: ' + JSON.stringify(e)); });
-      } catch(e) {
-        log('error: ' + e.message);
+    var cdns = [
+      'https://unpkg.com/@lottiefiles/dotlottie-web@0.35.0/dist/dotlottie.iife.js',
+      'https://esm.run/@lottiefiles/dotlottie-web@0.35.0/dist/dotlottie.iife.js',
+    ];
+
+    function tryLoad(index) {
+      if (index >= cdns.length) {
+        log('all CDNs failed');
+        return;
       }
-    };
-    script.onerror = function() {
-      log('script failed to load from CDN');
-    };
-    document.body.appendChild(script);
+      log('trying: ' + cdns[index]);
+      var script = document.createElement('script');
+      script.src = cdns[index];
+      script.onload = function() {
+        log('script loaded from: ' + cdns[index]);
+        try {
+          var canvas = document.getElementById('fishing');
+          var dl = new DotLottie({
+            canvas: canvas,
+            src: 'https://assets-v2.lottiefiles.com/a/1d242909-4eeb-4a56-a4c5-aed25aa51b12/lh5KVeg52i.lottie',
+            stateMachineId: 'StateMachine1',
+            autoplay: true,
+          });
+          dl.addEventListener('load', function() { log('animation loaded'); });
+          dl.addEventListener('loadError', function(e) { log('load error: ' + JSON.stringify(e)); });
+        } catch(e) {
+          log('error: ' + e.message);
+        }
+      };
+      script.onerror = function() {
+        log('failed: ' + cdns[index]);
+        tryLoad(index + 1);
+      };
+      document.body.appendChild(script);
+    }
+
+    tryLoad(0);
   </script>
 </body>
 </html>
